@@ -275,7 +275,10 @@ class MP_ComplexAddMoveHandler(MP_AddHandler):
             # done in another query
             # doesn't even work with sql_mode='ANSI,TRADITIONAL'
             # TODO: FIND OUT WHY?!?? right now I'm just blaming mysql
-            sql2.append("depth=LENGTH(%s)/%%s" % (sqlpath, ))
+            if vendor in ('microsoft', 'mssql'):
+                sql2.append("depth=LEN(%s)/%%s" % (sqlpath, ))
+            else:
+                sql2.append("depth=LENGTH(%s)/%%s" % (sqlpath, ))
             vals.extend([newpath, len(oldpath) + 1, self.node_cls.steplen])
         sql3 = "WHERE path LIKE %s"
         vals.extend([oldpath + '%'])
